@@ -1,0 +1,24 @@
+- hosts: dockerd11
+  tasks:
+
+     - name: run opencanary
+       shell: |
+         . /env/bin/activate
+         opencanaryd --start
+       async: 100
+
+     - name: sleep 90sec
+       wait_for: 
+         timeout: 90
+
+     - name: stop opencanary
+       shell: |
+         . /env/bin/activate
+         opencanaryd --stop
+         
+     #- name: get traffic
+      # shell: |
+       #  cd ..
+       #  cd TCP_CIC
+        # cd TCPDUMP_and_CICFlowMeter
+        # ./capture_interface_pcap.sh d11-eth0 pcap

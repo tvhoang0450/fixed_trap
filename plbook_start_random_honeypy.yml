@@ -1,0 +1,9 @@
+- hosts: dockerd11
+  tasks:
+     - name: run honeypy
+       shell: |
+         cd ..
+         cd HoneyPy-0.4.8
+         python Honey.py -d
+       async: 30
+

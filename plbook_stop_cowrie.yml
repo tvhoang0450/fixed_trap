@@ -1,0 +1,11 @@
+- hosts: dockerd11
+  tasks:
+     - name: stop cowrie
+       shell: |
+         #sudo su - cowrie
+         cd cowrie
+         source cowrie-env/bin/activate
+         bin/cowrie stop
+       become: yes
+       become_method: su
+       become_user: cowrie

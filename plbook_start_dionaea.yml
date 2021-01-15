@@ -1,0 +1,6 @@
+- hosts: dockerd11
+  tasks:
+     - name: run dionaea
+       shell: |
+         /opt/dionaea/bin/dionaea -l all,-debug -L '*'
+

@@ -1,0 +1,7 @@
+- hosts: dockerd11
+  tasks:
+     - name: stop opencanary
+       shell: |
+         . /env/bin/activate
+         opencanaryd --stop
+

@@ -1,0 +1,29 @@
+- hosts: dockerd11
+  tasks:
+     - name: run dionaea
+       shell: |
+         /opt/dionaea/bin/dionaea -l all,-debug -L '*'
+       async: 30
+       poll: 1
+     #- pause:
+         #second: 30
+
+     - name: Get running processes
+       shell: "ps -ef | grep -v grep | grep -w /opt/dionaea/bin/dionaea | awk '{print $2}'"
+       register: running_processes
+
+     - name: Kill running processes
+       shell: "kill {{ item }}"
+       with_items: "{{ running_processes.stdout_lines }}"
+
+     - wait_for:
+        path: "/proc/{{ item }}/status"
+        state: absent
+       with_items: "{{ running_processes.stdout_lines }}"
+       ignore_errors: yes
+       register: killed_processes
+
+     - name: Force kill stuck processes
+       shell: "kill -9 {{ item }}"
+       with_items: "{{ killed_processes.results | select('failed') | map(attribute='item') | list }}"
+

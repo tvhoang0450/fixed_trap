@@ -1,0 +1,8 @@
+- hosts: dockerd11
+  tasks:
+
+     - name: run opencanary
+       shell: |
+         . /env/bin/activate
+         opencanaryd --start
+

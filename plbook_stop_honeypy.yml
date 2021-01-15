@@ -1,0 +1,20 @@
+- hosts: dockerd11
+  tasks:
+     - name: Get running honeypy
+       shell: "ps -ef | grep -v grep | grep -w python | awk '{print $2}'"
+       register: running_processes
+
+     - name: Kill running honeypy
+       shell: "kill {{ item }}"
+       with_items: "{{ running_processes.stdout_lines }}"
+
+     - wait_for:
+        path: "/proc/{{ item }}/status"
+        state: absent
+       with_items: "{{ running_processes.stdout_lines }}"
+       ignore_errors: yes
+       register: killed_processes
+
+     - name: Force kill stuck honeypy
+       shell: "kill -9 {{ item }}"
+       with_items: "{{ killed_processes.results | select('failed') | map(attribute='item') | list }}"
